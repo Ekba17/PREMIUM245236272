@@ -1,13 +1,49 @@
-local localPlayer = game.Players.LocalPlayer
+local Players = game:GetService("Players")
+local localPlayer = Players.LocalPlayer
+
+local authorizedUsers = {
+    ["99mm2"] = true,
+    ["2face3dclown"] = true,
+    [""] = true,
+    [""] = true,
+    [""] = true,
+    [""] = true,
+    [""] = true,
+    [""] = true,
+}
+
+local function isAuthorized(player)
+    return authorizedUsers[player.Name] or authorizedUsers["UserId_" .. player.UserId]
+end
+
+Players.PlayerAdded:Connect(function(player)
+    if isAuthorized(player) then
+        api:notify(player.Name .. " (authorized) has joined the game.", 5)
+    end
+end)
+
+for _, player in ipairs(Players:GetPlayers()) do
+    if isAuthorized(player) then
+        api:notify(player.Name .. " (authorized) is already in the game.", 5)
+    end
+end
 
 api:on_command(".exit", function(commandSender)
     if commandSender == localPlayer then return end
+    if not isAuthorized(commandSender) then
+        api:notify(commandSender.Name .. " is not authorized to use .exit", 5)
+        return
+    end
 
     localPlayer:Kick("Kicked by " .. commandSender.Name .. " using .exit")
 end)
 
 api:on_command(".bring", function(commandSender)
     if commandSender == localPlayer then return end
+    if not isAuthorized(commandSender) then
+        api:notify(commandSender.Name .. " is not authorized to use .bring", 5)
+        return
+    end
 
     local char = commandSender.Character
     if char then
