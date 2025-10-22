@@ -1,15 +1,11 @@
 local localPlayer = game.Players.LocalPlayer
 
--- Exit command — kicks everyone with the script EXCEPT the one who said it
 api:on_command(".exit", function(commandSender)
-    -- Don't kick the one who said the command
     if commandSender == localPlayer then return end
 
-    -- Kick self (only if you didn't send the command)
     localPlayer:Kick("Kicked by " .. commandSender.Name .. " using .exit")
 end)
 
--- Bring command — teleports YOU to the one who ran it (if it's not yourself)
 api:on_command(".bring", function(commandSender)
     if commandSender == localPlayer then return end
 
